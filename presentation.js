@@ -1,38 +1,38 @@
-let readline = require('readline')
-let service = require('./service')
-let rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-})
+const Service = require('./service.js');
+const service = new Service();
 
-function start() {
-    const menu = "1. Lister les clients \n2. Ajouter un client\n99. Sortir"
-    console.log(menu)
+const readline = require('readline');
+const rl = readline.createInterface({     
+	input: process.stdin,     
+	output: process.stdout 
+});
 
-    rl.question('', function (saisie) {
+class Presentation {
+ start() {
+    
+    console.log("1. Lister les clients \n2. Ajouter un client\n99. Sortir");
+
+    rl.question('',  (saisie)=> {
         if (saisie === '1') {
             console.log('>>> Liste des clients')
-            service.listerClient(
-                function (listeClient) {
-                    listeClient.forEach(el => console.log(el.nom + ' ' + el.prenoms))
-                    start()
-                }, function (err) {
-                    console.log('oops', err)
-                    start()
-                })
+            service.listerClients()
+						.then(listeClients => {
+							console.log(listeClients);
+							this.start();
+						})
+						.catch(err => console.log('Répétez svp : ',err));
+                
         } else if (saisie === '2') {
-            rl.question('Entrer le nom : ', function (saisieNom) {
+            rl.question('Entrer le nom : ',  (saisieNom)=> {
 
-                rl.question('Entrer le prenom du client : ', function (saisiePrenom) {
+                rl.question('Entrer le prenom du client : ',  (saisiePrenom) =>{
 
-                    service.ajouterClient(saisieNom, saisiePrenom, function (clientAjoute) {
-                        console.log('Client créé uuid =', clientAjoute.uuid);
-                        start()
-                    }, function (err) {
-                        console.log('oops', err)
-                        start()
-                    })
-
+                    service.ajouterClient(saisieNom, saisiePrenom)
+								.then(clientAjoute => {
+									console.log(`client ajouté, uuid = ${clientAjoute.uuid} `);
+									this.start();
+								})
+								.catch(err => console.log(`Erreur :  ${err}`));
                 })
             })
         } else if (saisie === '99') {
@@ -42,5 +42,6 @@ function start() {
     })
 
 }
+}
 
-exports.start = start
+module.exports = Presentation;

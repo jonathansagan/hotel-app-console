@@ -1,29 +1,24 @@
-let request = require('request')
+const request = require("request-promise-native");
 
-function listerClient(callbackSuccess, callbackErr) {
-    request('http://localhost:8080/clients?start=0&size=10', { json: true }, function(err, res, body) {
-        if (err) { 
-            callbackErr(err)
-        } else {
-            callbackSuccess(body)
-        }
-    });
+class Service {
+
+ listerClient() {
+  return requestPromise(
+    "https://hwa-spring.herokuapp.com/clients?start=0&size=10",
+    { json: true }
+  );
 }
-exports.listerClient = listerClient
 
-function ajouterClient(saisieNom, saisiePrenom, callbackSuccess, callbackErr) {
-    request('http://localhost:8080/clients', { json: true,
-    method: 'POST',
+
+ ajouterClient(saisieNom, saisiePrenom) {
+  return requestPromise("https://hwa-spring.herokuapp.com/clients", {
+    json: true,
+    method: "POST",
     body: {
-        nom : saisieNom,
-        prenoms : saisiePrenom
-    }
-}, function(err, res, body) {
-    if (err) { 
-        callbackErr(err)
-    } else {
-        callbackSuccess(body)
-    }
-});
+      nom: saisieNom,
+      prenoms: saisiePrenom,
+    },
+  });
 }
- exports.ajouterClient = ajouterClient
+}
+module.exports = Service; 
