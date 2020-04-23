@@ -1,4 +1,4 @@
-const Service = require('./service.js');
+const Service = require('./service');
 const service = new Service();
 
 const readline = require('readline');
@@ -10,12 +10,15 @@ const rl = readline.createInterface({
 class Presentation {
  start() {
     
-    console.log("1. Lister les clients \n2. Ajouter un client\n99. Sortir");
+    console.log(`
+1. Lister les clients
+2. Ajouter un client
+99. Sortir`);
 
     rl.question('',  (saisie)=> {
         if (saisie === '1') {
             console.log('>>> Liste des clients')
-            service.listerClients()
+            this.service.listerClient()
 						.then(listeClients => {
 							console.log(listeClients);
 							this.start();
@@ -23,11 +26,11 @@ class Presentation {
 						.catch(err => console.log('Répétez svp : ',err));
                 
         } else if (saisie === '2') {
-            rl.question('Entrer le nom : ',  (saisieNom)=> {
+            rl.question('Entrer le nom du client : ',  (saisieNom)=> {
 
                 rl.question('Entrer le prenom du client : ',  (saisiePrenom) =>{
 
-                    service.ajouterClient(saisieNom, saisiePrenom)
+                    this.service.ajouterClient(saisieNom, saisiePrenom)
 								.then(clientAjoute => {
 									console.log(`client ajouté, uuid = ${clientAjoute.uuid} `);
 									this.start();
